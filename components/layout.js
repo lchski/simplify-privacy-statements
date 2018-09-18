@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 const page_wrapper = css`
   margin: 0 auto;
   max-width: 1600px;
-  font-family: "nta", Arial, sans-serif;
+  // font-family: HKGrotesk;
   padding-top: 0px;
   padding-bottom: 0px;
 `;

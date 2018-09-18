@@ -4,7 +4,7 @@ import { extractCritical } from "emotion-server";
 import flush from "styled-jsx/server";
 
 const bodyStyling = {
-  fontFamily: `"nta", Arial, sans-serif`,
+  fontFamily: `sans-serif`,
   padding: 0,
   margin: 0,
   overflowX: "hidden"
@@ -48,7 +48,22 @@ class MyDocument extends Document {
     return (
       <html lang="en" style={htmlStyling}>
         <Head>
+          <link
+            rel="preload"
+            href="/static/font/HKGrotesk-Regular.otf"
+            as="font"
+            type="font/otf"
+            crossOrigin="anonymous"
+          />
+          <link
+            rel="preload"
+            href="/static/font/HKGrotesk-Bold.otf"
+            as="font"
+            type="font/otf"
+            crossOrigin="anonymous"
+          />
           <style dangerouslySetInnerHTML={{ __html: this.props.css }} />
+          <link rel="icon" href="/static/favicon.ico" />
         </Head>
         <body style={bodyStyling}>
           <Main />

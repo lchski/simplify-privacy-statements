@@ -57,23 +57,54 @@ export class Agreement extends Component {
     return `<VariableColouring variableSelected='${variableSelected}' variable='${p1}' variableValue='${variableValue}'/>`;
   };
 
+  colourRow = (match, variable, display_text) => {
+    let retval;
+
+    console.log("-----------------------------");
+    console.log("match: ZZ", match, "ZZ");
+
+    // console.log("variable", variable, "text |" + display_text + "|")
+
+    const variableSelected = this.props.reduxState.variableSelected;
+    if (variable !== "undefined") {
+      retval = `<VariableColouring variableSelected='${variableSelected}' variable='${variable}' variableValue='${display_text}'/>`;
+    } else {
+      retval = display_text;
+    }
+
+    console.log("retval: ZZ", retval, "ZZ");
+
+    console.log("============================");
+    return retval;
+  };
+
   render() {
     const { reduxState } = this.props;
 
+    console.log("\n\n------- Render -------");
     const finalTemplate = reduxState.template
-      .filter(row =>
-        this.evaluateRowConditions(
-          row,
-          reduxState.questions,
-          reduxState.multiple_choice_options,
-          reduxState
-        )
+      .filter(
+        (row, index) =>
+          index >= 5 &&
+          index <= 7 &&
+          this.evaluateRowConditions(
+            row,
+            reduxState.questions,
+            reduxState.multiple_choice_options,
+            reduxState
+          )
       )
       .map(
         row =>
           this.props.showSection && row.section_name !== undefined
-            ? `**[${row.section_name}]**\n ${row.display_text}`
-            : row.display_text
+            ? `|${this.nameForId(
+                reduxState.multiple_choice_options,
+                row.variable_1
+              )}, **[${row.section_name}]**\n ${row.display_text}|`
+            : `|${this.nameForId(
+                reduxState.multiple_choice_options,
+                row.variable_1
+              )}, ${row.display_text}|`
       )
       .map(s => s.replace(/^\*\s/, "\n* "))
       .join("");
@@ -83,7 +114,11 @@ export class Agreement extends Component {
     let jsxString = md
       .render(finalTemplate)
       .replace(/<br>/g, "<br/>")
-      .replace(/\{(\S+)\}/g, this.colouringFunction);
+      .replace(/<p>/g, "<br/><br/>")
+      .replace(/<\/p>/g, "")
+      .replace(/\{(\S+)\}/g, this.colouringFunction)
+      .replace(/\|([\S]+), ([^|]+)\|/g, this.colourRow);
+
     return (
       <JsxParser
         bindings={reduxState}
